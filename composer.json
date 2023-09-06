@@ -1,5 +1,5 @@
 {
-    "name": "softspring/component-template",
+    "name": "softspring/http-cache-store-bundle",
     "description": "This is a template for creating new components",
     "type": "library",
     "license": "MIT",
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Softspring\\Component\\Template\\": "src"
+            "Softspring\\Bundle\\HttpCacheStoreBundle\\": "src"
         }
     },
     "config": {
