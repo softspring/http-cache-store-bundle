@@ -1,0 +1,11 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src/
+    bootstrapFiles:
+        - vendor/autoload.php
+    ignoreErrors:
+        - '#^Instantiated class App\\Kernel not found#'
