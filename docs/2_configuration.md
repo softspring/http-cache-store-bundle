@@ -41,7 +41,7 @@ services:
     http_client.cache.adapter.redis:
         parent: 'cache.adapter.redis'
         tags:
-            - { name: 'cache.pool', namespace: 'http_client' }
+            - { name: 'cache.pool', namespace: 'http_cache' }
 
 sfs_http_cache_store:
     adapter: 'htpp_client.cache.adapter.redis'
