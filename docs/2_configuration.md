@@ -49,6 +49,26 @@ sfs_http_cache_store:
 
 This configuration will prefix all cache items with *http_client:* namespace.
 
+**Clear cache**
+
+If you want to clear the cache, you need to clear the cache pool:
+
+```bash
+    bin/console cache:pool:clear http_client.cache.adapter.redis
+```
+
+Ensure you define your service as public:
+
+```yaml
+# config/packages/sfs_http_cache_store.yaml
+services:
+    http_client.cache.adapter.redis:
+        parent: 'cache.adapter.redis'
+        public: true
+        tags:
+            - { name: 'cache.pool', namespace: 'http_cache' }
+```
+
 # Configure logger
 
 You can configure a monolog logger to log cache hits and misses:
