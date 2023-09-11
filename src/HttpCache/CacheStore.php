@@ -163,7 +163,7 @@ class CacheStore implements StoreInterface
         return $purgedHttp || $purgedHttps;
     }
 
-    public function cleanup()
+    public function cleanup(): void
     {
         // nothing to do here
     }
