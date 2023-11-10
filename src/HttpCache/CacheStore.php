@@ -53,19 +53,63 @@ class CacheStore implements StoreInterface
             return null;
         }
 
+        $logFragment = $this->processFragmentForLogger($request->getUri());
+        $logVary = $this->processVaryForLogger($entry[1]['vary'] ?? [], $request);
+
         $headers = $match[1];
         if ($this->cache->hasItem($key = $headers['x-content-digest'][0])) {
-            $this->logger && $this->logger->info(sprintf('HIT: "%s"', $request->getUri()));
+            $this->logger && $this->logger->info(sprintf('HTTP CACHE HIT: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
 
             return $this->restoreResponse($headers, $key);
         }
 
-        $this->logger && $this->logger->info(sprintf('MISS: "%s"', $request->getUri()));
+        $this->logger && $this->logger->info(sprintf('HTTP CACHE MISS: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
 
         // TODO the metaStore referenced an entity that doesn't exist in
         // the entityStore. We definitely want to return nil but we should
         // also purge the entry from the meta-store when this is detected.
         return null;
+    }
+
+    protected function processVaryForLogger(array $vary, Request $request): string
+    {
+        if (!$this->logger) {
+            return '';
+        }
+
+        if (!isset($vary[0])) {
+            return '';
+        }
+
+        $headersVary = array_intersect_key($request->headers->all(), array_flip(array_map('strtolower', $vary)));
+        $headersVary = array_map(fn ($k, $v) => "$k={$v[0]}", array_keys($headersVary), array_values($headersVary));
+
+        return sprintf('(Vary: %s)', implode(', ', $headersVary));
+    }
+
+    protected function processFragmentForLogger(string $url): string
+    {
+        if (!$this->logger) {
+            return '';
+        }
+
+        if (!str_contains($url, '/_fragment')) {
+            return '';
+        }
+
+        $fragmentData = parse_url($url, PHP_URL_QUERY);
+        $fragmentData = explode('&', $fragmentData);
+        $fragmentData = array_filter($fragmentData, fn ($v) => str_starts_with($v, '_path'));
+        $fragmentData = current($fragmentData);
+        $fragmentData = explode('=', $fragmentData)[1];
+        $fragmentData = urldecode($fragmentData);
+        $fragmentData = explode('&', $fragmentData);
+        $fragmentData = array_map(fn ($v) => explode('=', $v), $fragmentData);
+        $fragmentData = array_combine(array_column($fragmentData, 0), array_column($fragmentData, 1));
+        $controller = urldecode($fragmentData['_controller']);
+        unset($fragmentData['_controller']);
+
+        return sprintf('FRAGMENT %s(%s)', $controller, implode(', ', array_map(fn ($k, $v) => "$k={$v}", array_keys($fragmentData), array_values($fragmentData))));
     }
 
     public function write(Request $request, Response $response): string
@@ -79,8 +123,6 @@ class CacheStore implements StoreInterface
         if (!$this->save($digest, $response->getContent(), false, $response->getTtl() + 1)) {
             throw new \RuntimeException('Unable to store the entity.');
         }
-
-        $this->logger && $this->logger->info(sprintf('WRITE: "%s" (TTL: %u)', $request->getUri(), $response->getTtl()));
 
         if (!$response->headers->has('Transfer-Encoding')) {
             $response->headers->set('Content-Length', (string) \strlen($response->getContent()));
@@ -105,6 +147,8 @@ class CacheStore implements StoreInterface
         foreach ($this->options['private_headers'] as $h) {
             unset($headers[strtolower($h)]);
         }
+
+        $this->logger && $this->logger->info(sprintf('HTTP CACHE WRITE: "%s" %s %s (TTL: %u)', $request->getUri(), $this->processVaryForLogger($headers['vary'], $request), $this->processFragmentForLogger($request->getUri()), $response->getTtl()));
 
         array_unshift($entries, [$storedEnv, $headers]);
 
