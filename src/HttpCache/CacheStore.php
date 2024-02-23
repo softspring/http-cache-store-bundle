@@ -148,7 +148,7 @@ class CacheStore implements StoreInterface
             unset($headers[strtolower($h)]);
         }
 
-        $this->logger && $this->logger->info(sprintf('HTTP CACHE WRITE: "%s" %s %s (TTL: %u)', $request->getUri(), $this->processVaryForLogger($headers['vary'], $request), $this->processFragmentForLogger($request->getUri()), $response->getTtl()));
+        $this->logger && $this->logger->info(sprintf('HTTP CACHE WRITE: "%s" %s %s (TTL: %u)', $request->getUri(), $this->processVaryForLogger($headers['vary'] ?? [], $request), $this->processFragmentForLogger($request->getUri()), $response->getTtl()));
 
         array_unshift($entries, [$storedEnv, $headers]);
 
