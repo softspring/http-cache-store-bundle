@@ -21,7 +21,7 @@ class CacheStore implements StoreInterface
 
     private array $options;
 
-    public function __construct(CacheItemPoolInterface $cache, LoggerInterface $logger = null, array $options = [])
+    public function __construct(CacheItemPoolInterface $cache, ?LoggerInterface $logger = null, array $options = [])
     {
         $this->cache = $cache;
         $this->logger = $logger;
@@ -241,7 +241,7 @@ class CacheStore implements StoreInterface
     /**
      * Save data for the given key.
      */
-    private function save(string $key, string $data, bool $overwrite = true, int $ttl = null): bool
+    private function save(string $key, string $data, bool $overwrite = true, ?int $ttl = null): bool
     {
         /** @var ItemInterface $item */
         $item = $this->cache->getItem($key);
@@ -356,7 +356,7 @@ class CacheStore implements StoreInterface
     /**
      * Restores a Response from the HTTP headers and body.
      */
-    private function restoreResponse(array $headers, string $key = null): Response
+    private function restoreResponse(array $headers, ?string $key = null): Response
     {
         $status = $headers['X-Status'][0];
         unset($headers['X-Status']);
