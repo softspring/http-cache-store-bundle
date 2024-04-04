@@ -120,7 +120,8 @@ class CacheStore implements StoreInterface
         $digest = $this->generateContentDigest($response);
         $response->headers->set('X-Content-Digest', $digest);
 
-        if (!$this->save($digest, $response->getContent(), false, $response->getTtl() + 1)) {
+        $ttl = $response->getTtl();
+        if (!$this->save($digest, $response->getContent(), false, $ttl ? $ttl + 1 : null)) {
             throw new \RuntimeException('Unable to store the entity.');
         }
 
@@ -252,7 +253,7 @@ class CacheStore implements StoreInterface
 
         $item->set($data);
         // $item->tag('http_cache');
-        false !== $ttl && $item->expiresAfter($ttl);
+        null !== $ttl && $item->expiresAfter($ttl);
 
         $this->cache->save($item);
 
