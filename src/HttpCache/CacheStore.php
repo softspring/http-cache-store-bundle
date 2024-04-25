@@ -4,6 +4,8 @@ namespace Softspring\Bundle\HttpCacheStoreBundle\HttpCache;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use SplObjectStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
@@ -16,8 +18,8 @@ class CacheStore implements StoreInterface
 
     protected ?LoggerInterface $logger;
 
-    /** @var \SplObjectStorage<Request, string> */
-    private \SplObjectStorage $keyCache;
+    /** @var SplObjectStorage<Request, string> */
+    private SplObjectStorage $keyCache;
 
     private array $options;
 
@@ -25,7 +27,7 @@ class CacheStore implements StoreInterface
     {
         $this->cache = $cache;
         $this->logger = $logger;
-        $this->keyCache = new \SplObjectStorage();
+        $this->keyCache = new SplObjectStorage();
         $this->options = array_merge([
             'private_headers' => ['Set-Cookie'],
         ], $options);
@@ -122,7 +124,7 @@ class CacheStore implements StoreInterface
 
         $ttl = $response->getTtl();
         if (!$this->save($digest, $response->getContent(), false, $ttl ? $ttl + 1 : null)) {
-            throw new \RuntimeException('Unable to store the entity.');
+            throw new RuntimeException('Unable to store the entity.');
         }
 
         if (!$response->headers->has('Transfer-Encoding')) {
@@ -154,7 +156,7 @@ class CacheStore implements StoreInterface
         array_unshift($entries, [$storedEnv, $headers]);
 
         if (!$this->save($key, serialize($entries), ttl: $response->getTtl())) {
-            throw new \RuntimeException('Unable to store the metadata.');
+            throw new RuntimeException('Unable to store the metadata.');
         }
 
         return $key;
@@ -178,7 +180,7 @@ class CacheStore implements StoreInterface
         }
 
         if ($modified && !$this->save($key, serialize($entries))) {
-            throw new \RuntimeException('Unable to store the metadata.');
+            throw new RuntimeException('Unable to store the metadata.');
         }
     }
 
