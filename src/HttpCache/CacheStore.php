@@ -3,6 +3,7 @@
 namespace Softspring\Bundle\HttpCacheStoreBundle\HttpCache;
 
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SplObjectStorage;
@@ -33,6 +34,9 @@ class CacheStore implements StoreInterface
         ], $options);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function lookup(Request $request): ?Response
     {
         $key = $this->getCacheKey($request);
@@ -84,7 +88,7 @@ class CacheStore implements StoreInterface
         }
 
         $headersVary = array_intersect_key($request->headers->all(), array_flip(array_map('strtolower', $vary)));
-        $headersVary = array_map(fn ($k, $v) => "$k={$v[0]}", array_keys($headersVary), array_values($headersVary));
+        $headersVary = array_map(fn ($k, $v) => "$k=$v[0]", array_keys($headersVary), array_values($headersVary));
 
         return sprintf('(Vary: %s)', implode(', ', $headersVary));
     }
@@ -114,6 +118,9 @@ class CacheStore implements StoreInterface
         return sprintf('FRAGMENT %s(%s)', $controller, implode(', ', array_map(fn ($k, $v) => "$k={$v}", array_keys($fragmentData), array_values($fragmentData))));
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function write(Request $request, Response $response): string
     {
         $key = $this->getCacheKey($request);
@@ -162,6 +169,9 @@ class CacheStore implements StoreInterface
         return $key;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function invalidate(Request $request): void
     {
         $modified = false;
@@ -199,6 +209,9 @@ class CacheStore implements StoreInterface
         return false;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function purge(string $url): bool
     {
         $http = preg_replace('#^https:#', 'http:', $url);
@@ -217,6 +230,7 @@ class CacheStore implements StoreInterface
 
     /**
      * Purges data for the given URL.
+     * @throws InvalidArgumentException
      */
     private function doPurge(string $url): bool
     {
@@ -233,6 +247,7 @@ class CacheStore implements StoreInterface
 
     /**
      * Loads data for the given key.
+     * @throws InvalidArgumentException
      */
     private function load(string $key): ?string
     {
@@ -243,6 +258,7 @@ class CacheStore implements StoreInterface
 
     /**
      * Save data for the given key.
+     * @throws InvalidArgumentException
      */
     private function save(string $key, string $data, bool $overwrite = true, ?int $ttl = null): bool
     {
@@ -300,6 +316,7 @@ class CacheStore implements StoreInterface
      * Gets all data associated with the given key.
      *
      * Use this method only if you know what you are doing.
+     * @throws InvalidArgumentException
      */
     private function getMetadata(string $key): array
     {
@@ -358,19 +375,22 @@ class CacheStore implements StoreInterface
 
     /**
      * Restores a Response from the HTTP headers and body.
+     * @throws InvalidArgumentException
      */
     private function restoreResponse(array $headers, ?string $key = null): Response
     {
         $status = $headers['X-Status'][0];
         unset($headers['X-Status']);
 
-        $content = $this->cache->getItem($key);
-        if ($content->isHit()) {
-            $content = $content->get();
-        } else {
-            $content = '';
+        if (is_string($key)) {
+            $content = $this->cache->getItem($key);
+            if ($content->isHit()) {
+                $content = $content->get();
+            } else {
+                $content = '';
+            }
         }
 
-        return new Response($content, $status, $headers);
+        return new Response($content ?? '', $status, $headers);
     }
 }
