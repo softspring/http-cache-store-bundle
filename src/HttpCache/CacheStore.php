@@ -382,7 +382,7 @@ class CacheStore implements StoreInterface
         $status = $headers['X-Status'][0];
         unset($headers['X-Status']);
 
-        if ($key) {
+        if (is_string($key)) {
             $content = $this->cache->getItem($key);
             if ($content->isHit()) {
                 $content = $content->get();
