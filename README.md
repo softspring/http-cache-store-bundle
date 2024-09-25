@@ -1,12 +1,11 @@
+# Http cache store bundle
 
-*This bundle is under development, more features will be added soon, and existing ones may change.*
-
-[![Latest Stable Version](https://poser.pugx.org/softspring/http-cache-store-bundle/v/stable.svg)](https://packagist.org/packages/softspring/http-cache-store-bundle)
-[![Latest Unstable Version](https://poser.pugx.org/softspring/http-cache-store-bundle/v/unstable.svg)](https://packagist.org/packages/softspring/http-cache-store-bundle)
-[![License](https://poser.pugx.org/softspring/http-cache-store-bundle/license.svg)](https://packagist.org/packages/softspring/http-cache-store-bundle)
-[![PHP Version Require](http://poser.pugx.org/softspring/http-cache-store-bundle/require/php)](https://packagist.org/packages/softspring/http-cache-store-bundle)
-[![Total Downloads](https://poser.pugx.org/softspring/http-cache-store-bundle/downloads)](https://packagist.org/packages/softspring/http-cache-store-bundle)
-[![Build status](https://github.com/softspring/http-cache-store-bundle/actions/workflows/php.yml/badge.svg?branch=5.3)](https://github.com/softspring/http-cache-store-bundle/actions/workflows/php.yml)
+![Latest Stable](https://img.shields.io/packagist/v/softspring/http-cache-store-bundle?label=stable&style=flat-square)
+![Latest Unstable](https://img.shields.io/packagist/v/softspring/http-cache-store-bundle?label=unstable&style=flat-square&include_prereleases)
+![License](https://img.shields.io/packagist/l/softspring/http-cache-store-bundle?style=flat-square)
+![PHP Version](https://img.shields.io/packagist/dependency-v/softspring/http-cache-store-bundle/php?style=flat-square)
+![Downloads](https://img.shields.io/packagist/dt/softspring/http-cache-store-bundle?style=flat-square)
+[![CI](https://img.shields.io/github/actions/workflow/status/softspring/http-cache-store-bundle/php.yml?branch=5.3&style=flat-square&label=CI)](https://github.com/softspring/http-cache-store-bundle/actions/workflows/php.yml)
 
 This bundle provides to HttpCache class storage implementation for Symfony cache component. This is useful for example
  to store http cache in a doctrine database, redis or memcached.
