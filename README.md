@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/packagist/l/softspring/http-cache-store-bundle?style=flat-square)
 ![PHP Version](https://img.shields.io/packagist/dependency-v/softspring/http-cache-store-bundle/php?style=flat-square)
 ![Downloads](https://img.shields.io/packagist/dt/softspring/http-cache-store-bundle?style=flat-square)
-[![CI](https://img.shields.io/github/actions/workflow/status/softspring/http-cache-store-bundle/php.yml?branch=5.3&style=flat-square&label=CI)](https://github.com/softspring/http-cache-store-bundle/actions/workflows/php.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/softspring/http-cache-store-bundle/php.yml?branch=5.4&style=flat-square&label=CI)](https://github.com/softspring/http-cache-store-bundle/actions/workflows/php.yml)
 
 This bundle provides to HttpCache class storage implementation for Symfony cache component. This is useful for example
  to store http cache in a doctrine database, redis or memcached.
