@@ -2,7 +2,7 @@
     "name": "softspring/http-cache-store-bundle",
     "description": "This is a template for creating new components",
     "type": "library",
-    "license": "AGPL-3.0",
+    "license": "AGPL-3.0-or-later",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
