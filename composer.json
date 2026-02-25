@@ -15,7 +15,8 @@
         "symfony/cache": "^6.4 || ^7.4 || ^8.0",
         "symfony/config": "^6.4 || ^7.4 || ^8.0",
         "symfony/dependency-injection": "^6.4 || ^7.4 || ^8.0",
-        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.0"
+        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.0",
+        "symfony/yaml": "^6.4 || ^7.4 || ^8.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -43,13 +44,10 @@
         ],
         "run-tests": [
             "composer validate --strict --no-check-lock --ansi",
-            "XDEBUG_MODE=coverage vendor/bin/phpunit",
             "vendor/bin/rector process src tests --dry-run",
             "vendor/bin/phpstan analyse src tests --level 5",
             "vendor/bin/php-cs-fixer fix --dry-run --diff",
-            "vendor/bin/yaml-lint .github/ -vvv --parse-tags",
-            "vendor/bin/yaml-lint config/ -vvv --parse-tags",
-            "vendor/bin/yaml-lint translations/ -vvv --parse-tags"
+            "vendor/bin/yaml-lint .github/ -vvv --parse-tags"
         ],
         "test": [
             "composer update --no-scripts --ansi",

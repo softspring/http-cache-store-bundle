@@ -79,7 +79,7 @@ class CacheStore implements StoreInterface
 
     protected function processVaryForLogger(array $vary, Request $request): string
     {
-        if (!$this->logger) {
+        if (!$this->logger instanceof LoggerInterface) {
             return '';
         }
 
@@ -88,14 +88,14 @@ class CacheStore implements StoreInterface
         }
 
         $headersVary = array_intersect_key($request->headers->all(), array_flip(array_map('strtolower', $vary)));
-        $headersVary = array_map(fn ($k, $v) => "$k=$v[0]", array_keys($headersVary), array_values($headersVary));
+        $headersVary = array_map(fn ($k, $v): string => "$k=$v[0]", array_keys($headersVary), array_values($headersVary));
 
         return sprintf('(Vary: %s)', implode(', ', $headersVary));
     }
 
     protected function processFragmentForLogger(string $url): string
     {
-        if (!$this->logger) {
+        if (!$this->logger instanceof LoggerInterface) {
             return '';
         }
 
@@ -105,17 +105,17 @@ class CacheStore implements StoreInterface
 
         $fragmentData = parse_url($url, PHP_URL_QUERY);
         $fragmentData = explode('&', $fragmentData);
-        $fragmentData = array_filter($fragmentData, fn ($v) => str_starts_with($v, '_path'));
+        $fragmentData = array_filter($fragmentData, fn ($v): bool => str_starts_with($v, '_path'));
         $fragmentData = current($fragmentData);
         $fragmentData = explode('=', $fragmentData)[1];
         $fragmentData = urldecode($fragmentData);
         $fragmentData = explode('&', $fragmentData);
-        $fragmentData = array_map(fn ($v) => explode('=', $v), $fragmentData);
+        $fragmentData = array_map(fn ($v): array => explode('=', $v), $fragmentData);
         $fragmentData = array_combine(array_column($fragmentData, 0), array_column($fragmentData, 1));
         $controller = urldecode($fragmentData['_controller']);
         unset($fragmentData['_controller']);
 
-        return sprintf('FRAGMENT %s(%s)', $controller, implode(', ', array_map(fn ($k, $v) => "$k={$v}", array_keys($fragmentData), array_values($fragmentData))));
+        return sprintf('FRAGMENT %s(%s)', $controller, implode(', ', array_map(fn ($k, $v): string => "$k={$v}", array_keys($fragmentData), array_values($fragmentData))));
     }
 
     /**
@@ -271,7 +271,9 @@ class CacheStore implements StoreInterface
 
         $item->set($data);
         // $item->tag('http_cache');
-        null !== $ttl && $item->expiresAfter($ttl);
+        if (null !== $ttl) {
+            $item->expiresAfter($ttl);
+        }
 
         $this->cache->save($item);
 
@@ -296,7 +298,7 @@ class CacheStore implements StoreInterface
      */
     private function requestsMatch(?string $vary, array $env1, array $env2): bool
     {
-        if (empty($vary)) {
+        if (in_array($vary, [null, '', '0'], true)) {
             return true;
         }
 
@@ -384,11 +386,7 @@ class CacheStore implements StoreInterface
 
         if (is_string($key)) {
             $content = $this->cache->getItem($key);
-            if ($content->isHit()) {
-                $content = $content->get();
-            } else {
-                $content = '';
-            }
+            $content = $content->isHit() ? $content->get() : '';
         }
 
         return new Response($content ?? '', $status, $headers);
