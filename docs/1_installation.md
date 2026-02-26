@@ -9,7 +9,7 @@ of the Composer documentation.
 Open a command console, enter your project directory and execute:
 
 ```bash
-$ composer require softspring/http-cache-store-bundle:^5.4
+$ composer require softspring/http-cache-store-bundle:^6.0
 ```
 
 ## Applications that don't use Symfony Flex
@@ -20,7 +20,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```console
-$ composer require softspring/http-cache-store-bundle:^5.4
+$ composer require softspring/http-cache-store-bundle:^6.0
 ```
 
 ### Step 2: Enable the Bundle
