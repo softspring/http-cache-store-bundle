@@ -2,20 +2,22 @@
     "name": "softspring/http-cache-store-bundle",
     "description": "This is a template for creating new components",
     "license": "AGPL-3.0-or-later",
-    "type": "library",
+    "type": "symfony-bundle",
     "require": {
-        "php": ">=8.4"
+        "php": ">=8.4",
+        "psr/cache": "^3.0",
+        "symfony/cache": "^6.4 || ^7.4 || ^8.0",
+        "symfony/config": "^6.4 || ^7.4 || ^8.0",
+        "symfony/dependency-injection": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.50",
         "friendsofphp/php-cs-fixer": "^3.94",
         "phpstan/phpstan": "^2.1",
-        "psr/cache": "^3.0",
+        "phpunit/phpunit": "^12.5",
         "rector/rector": "^2.3",
-        "symfony/cache": "^6.4 || ^7.4 || ^8.0",
-        "symfony/config": "^6.4 || ^7.4 || ^8.0",
-        "symfony/dependency-injection": "^6.4 || ^7.4 || ^8.0",
-        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-foundation": "^6.4 || ^7.4 || ^8.0",
         "symfony/yaml": "^6.4 || ^7.4 || ^8.0"
     },
     "minimum-stability": "dev",
@@ -44,6 +46,7 @@
         ],
         "run-tests": [
             "composer validate --strict --no-check-lock --ansi",
+            "XDEBUG_MODE=coverage vendor/bin/phpunit",
             "vendor/bin/rector process src tests --dry-run",
             "vendor/bin/phpstan analyse src tests --level 5",
             "vendor/bin/php-cs-fixer fix --dry-run --diff",
