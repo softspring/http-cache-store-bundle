@@ -6,7 +6,7 @@
 [![PHP Version](https://img.shields.io/packagist/dependency-v/softspring/http-cache-store-bundle/php?style=flat-square)](https://github.com/softspring/http-cache-store-bundle/blob/6.0/composer.json)
 [![Downloads](https://img.shields.io/packagist/dt/softspring/http-cache-store-bundle?style=flat-square)](https://packagist.org/packages/softspring/http-cache-store-bundle)
 [![CI](https://img.shields.io/github/actions/workflow/status/softspring/http-cache-store-bundle/ci.yml?branch=6.0&style=flat-square&label=CI)](https://github.com/softspring/http-cache-store-bundle/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/codecov/c/github/softspring/http-cache-store-bundle?branch=6.0&style=flat-square)](https://codecov.io/gh/softspring/http-cache-store-bundle)
+[![Coverage](https://img.shields.io/codecov/c/github/softspring/http-cache-store-bundle?branch=6.0&style=flat-square)](https://app.codecov.io/gh/softspring/http-cache-store-bundle/tree/6.0)
 
 This bundle replaces Symfony HttpCache's default store with one backed by a configurable Symfony cache pool.
 
