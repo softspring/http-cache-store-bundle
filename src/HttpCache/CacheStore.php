@@ -64,12 +64,16 @@ class CacheStore implements StoreInterface
 
         $headers = $match[1];
         if ($this->cache->hasItem($key = $headers['x-content-digest'][0])) {
-            $this->logger && $this->logger->info(sprintf('HTTP CACHE HIT: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
+            if ($this->logger instanceof LoggerInterface) {
+                $this->logger->info(sprintf('HTTP CACHE HIT: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
+            }
 
             return $this->restoreResponse($headers, $key);
         }
 
-        $this->logger && $this->logger->info(sprintf('HTTP CACHE MISS: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
+        if ($this->logger instanceof LoggerInterface) {
+            $this->logger->info(sprintf('HTTP CACHE MISS: "%s" %s %s', $request->getUri(), $logFragment, $logVary));
+        }
 
         // TODO the metaStore referenced an entity that doesn't exist in
         // the entityStore. We definitely want to return nil but we should
@@ -158,7 +162,9 @@ class CacheStore implements StoreInterface
             unset($headers[strtolower($h)]);
         }
 
-        $this->logger && $this->logger->info(sprintf('HTTP CACHE WRITE: "%s" %s %s (TTL: %u)', $request->getUri(), $this->processVaryForLogger($headers['vary'] ?? [], $request), $this->processFragmentForLogger($request->getUri()), $response->getTtl()));
+        if ($this->logger instanceof LoggerInterface) {
+            $this->logger->info(sprintf('HTTP CACHE WRITE: "%s" %s %s (TTL: %u)', $request->getUri(), $this->processVaryForLogger($headers['vary'] ?? [], $request), $this->processFragmentForLogger($request->getUri()), $response->getTtl()));
+        }
 
         array_unshift($entries, [$storedEnv, $headers]);
 
