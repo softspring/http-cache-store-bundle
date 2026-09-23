@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Softspring\Bundle\HttpCacheStoreBundle\DependencyInjection\CompilerPass;
 
 use Softspring\Bundle\HttpCacheStoreBundle\HttpCache\CacheStore;
